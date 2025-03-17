@@ -62,18 +62,15 @@ const getKeyType = (key) => {
 const createResultString = (key, displayedNum, state) => {
     const keyContent = key.textContent;
     const { action } = key.dataset;
-    const {
-        firstValue,
-        operator,
-        modValue,
-        previousKeyType
-    } = state;
+    let { firstValue, operator, modValue, previousKeyType } = state;
 
     if (action === 'clear') return '0';
+    
     if (action === 'decimal') {
         if (previousKeyType === 'operator') return '0.';
         return displayedNum.includes('.') ? displayedNum : displayedNum + '.';
     }
+
     if (action === 'number') {
         return displayedNum === '0' ||
             previousKeyType === 'operator' ||
@@ -81,43 +78,42 @@ const createResultString = (key, displayedNum, state) => {
             ? keyContent
             : displayedNum + keyContent;
     }
+
     if (action === 'operator') {
-        return firstValue &&
-            operator &&
-            previousKeyType !== 'operator' &&
-            previousKeyType !== 'calculate'
-            ? calculate(firstValue, operator, displayedNum)
+        return firstValue && operator && previousKeyType !== 'operator' && previousKeyType !== 'calculate'
+            ? calculate(firstValue, operator, displayedNum).toString()
             : displayedNum;
     }
+
     if (action === 'calculate') {
-        if (firstValue) {
-            return previousKeyType === 'calculate'
-                ? calculate(displayedNum, operator, modValue)
-                : calculate(firstValue, operator, displayedNum);
+        if (firstValue && operator) {
+            return calculate(firstValue, operator, displayedNum).toString();
         }
         return displayedNum;
     }
+
     return displayedNum;
 };
+
 
 const updateCalculatorState = (key, resultString, calculator) => {
     const keyType = getKeyType(key);
     const { action } = key.dataset;
-    
+    let { firstValue, operator, previousKeyType } = calculator.dataset;
+
     calculator.dataset.previousKeyType = keyType;
-    
-    if (action === 'operator') {
+
+    if (keyType === 'operator') {
         calculator.dataset.operator = action;
         calculator.dataset.firstValue = resultString;
-        key.classList.add('is-depressed');
     }
-    if (action === 'calculate') {
-        calculator.dataset.modValue = calculator.dataset.firstValue;
+
+    if (keyType === 'calculate') {
         calculator.dataset.firstValue = resultString;
     }
+
     if (action === 'clear' && key.textContent === 'AC') {
         calculator.dataset.firstValue = '';
-        calculator.dataset.modValue = '';
         calculator.dataset.operator = '';
         calculator.dataset.previousKeyType = '';
     }
