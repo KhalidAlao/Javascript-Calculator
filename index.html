@@ -99,6 +99,28 @@ const createResultString = (key, displayedNum, state) => {
     return displayedNum;
 };
 
+const updateCalculatorState = (key, resultString, calculator) => {
+    const keyType = getKeyType(key);
+    const { action } = key.dataset;
+    
+    calculator.dataset.previousKeyType = keyType;
+    
+    if (action === 'operator') {
+        calculator.dataset.operator = action;
+        calculator.dataset.firstValue = resultString;
+        key.classList.add('is-depressed');
+    }
+    if (action === 'calculate') {
+        calculator.dataset.modValue = calculator.dataset.firstValue;
+        calculator.dataset.firstValue = resultString;
+    }
+    if (action === 'clear' && key.textContent === 'AC') {
+        calculator.dataset.firstValue = '';
+        calculator.dataset.modValue = '';
+        calculator.dataset.operator = '';
+        calculator.dataset.previousKeyType = '';
+    }
+};
 
 
 
