@@ -12,7 +12,6 @@
   
         <div class="calculator">
           <div class="calculator__display">0</div>
-    
           <div class="calculator__keys">
             <button class="key--operator" data-action="add">+</button>
             <button class="key--operator" data-action="subtract">-</button>
@@ -59,9 +58,31 @@ return result
 
 };
 
+const getKeyType = (key) => {
+  const { action } = key.dataset
+  if (!action) return 'number'
+  if (
+    action === 'add' ||
+    action === 'subtract' ||
+    action === 'multiply' ||
+    action === 'divide'
+  ) return 'operator'
+  // For everything else, return the action
+  return action
+}
 
 
 
+const updateCalculatorState = (key, calculator) => {
+  const keyType = getKeyType(key)
+  calculator.dataset.previousKeyType = keyType
+
+  if (keyType === 'number') { /* ... */ }
+  if (keyType === 'decimal') { /* ... */ }
+  if (keyType === 'operator') { /* ... */}
+  if (keyType === 'clear') { /* ... */ }
+  if (keyType === 'calculate') { /* ... */ }
+}
 
 keys.addEventListener("click", e => {
  if (e.target.matches("button")) {
@@ -71,6 +92,8 @@ keys.addEventListener("click", e => {
     const keyContent = key.textContent;
     const displayedNum = display.textContent;
     const previousKeyType = calculator.dataset.previousKeyType
+    const resultString = createResultString(e.target, displayedNum, calculator.dataset)
+
 
     // Remove .is-depressed class from all keys
     Array.from(key.parentNode.children)
@@ -147,20 +170,35 @@ display.textContent = 0
   calculator.dataset.previousKeyType = 'clear'
 }
 
+
 // Display Calculations
+
+const createResultString = (key, displayedNum, state) => {
+
+  const keyContent = key.textContent
+  const action = key.dataset.action
+  const firstValue = state.firstValue
+  const modValue = state.modValue
+  const operator = state.operator
+  const previousKeyType = state.previousKeyType
+
 if (action === 'calculate') {
-  let firstValue = calculator.dataset.firstValue
-  const operator = calculator.dataset.operator
-  const secondValue = displayedNum
+    let firstValue = calculator.dataset.firstValue
+    const operator = calculator.dataset.operator
+    let secondValue = displayedNum
 
-  if (firstValue) {
-  if (previousKeyType === 'calculate') {
-    firstValue = displayedNum
-    secondValue = calculator.dataset.modValue
+    if (firstValue) {
+      return previousKeyType === 'calculate'
+        ? calculate(displayedNum, operator, modValue)
+        : calculate(firstValue, operator, displayedNum)
+    } else {
+      return displayedNum
+    }
   }
-
-display.textContent = calculate(firstValue, operator, secondValue)
 }
+
+
+
 
 // Set modValue attribute
   calculator.dataset.modValue = secondValue
@@ -190,7 +228,7 @@ if (
 
 
  }
-}
+
 )
 
 
