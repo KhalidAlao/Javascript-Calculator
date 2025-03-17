@@ -59,21 +59,6 @@ h6 {
   display: block;
 }
 
-/* Removes all decimals and discs from lists */
-
-ol,
-ul {
-  list-style: none;
-}
-
-/* 
- * Completely resets form items
- * ----------------------------
- * Super hard reset that removes all borders
- * and radiuses of all form items (including
- * checkboxes and radios)
- */
-
 input,
 textarea,
 button {
@@ -181,3 +166,11 @@ body {
   grid-column: -2;
   grid-row: 2 / span 4;
 }
+
+.calculator-title {
+    color: #2d2d2d;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+  }
