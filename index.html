@@ -58,6 +58,48 @@ const getKeyType = (key) => {
     return action;
 };
 
+const createResultString = (key, displayedNum, state) => {
+    const keyContent = key.textContent;
+    const { action } = key.dataset;
+    const {
+        firstValue,
+        operator,
+        modValue,
+        previousKeyType
+    } = state;
+
+    if (action === 'clear') return '0';
+    if (action === 'decimal') {
+        if (previousKeyType === 'operator') return '0.';
+        return displayedNum.includes('.') ? displayedNum : displayedNum + '.';
+    }
+    if (action === 'number') {
+        return displayedNum === '0' ||
+            previousKeyType === 'operator' ||
+            previousKeyType === 'calculate'
+            ? keyContent
+            : displayedNum + keyContent;
+    }
+    if (action === 'operator') {
+        return firstValue &&
+            operator &&
+            previousKeyType !== 'operator' &&
+            previousKeyType !== 'calculate'
+            ? calculate(firstValue, operator, displayedNum)
+            : displayedNum;
+    }
+    if (action === 'calculate') {
+        if (firstValue) {
+            return previousKeyType === 'calculate'
+                ? calculate(displayedNum, operator, modValue)
+                : calculate(firstValue, operator, displayedNum);
+        }
+        return displayedNum;
+    }
+    return displayedNum;
+};
+
+
 
 
 
