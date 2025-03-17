@@ -38,6 +38,26 @@
 const calculator = document.querySelector(".calculator");
 const display = calculator.querySelector(".calculator__display"); 
 
+const calculate = (n1, operator, n2) => {
+    const num1 = parseFloat(n1);
+    const num2 = parseFloat(n2);
+    
+    switch(operator) {
+        case 'add': return num1 + num2;
+        case 'subtract': return num1 - num2;
+        case 'multiply': return num1 * num2;
+        case 'divide': return num1 / num2;
+        default: return num2;
+    }
+};
+
+const getKeyType = (key) => {
+    const { action } = key.dataset;
+    if (!action) return 'number';
+    if (['add', 'subtract', 'multiply', 'divide'].includes(action)) return 'operator';
+    return action;
+};
+
 
 
 
